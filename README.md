@@ -28,7 +28,7 @@ API de gerenciamento para loja de roupas Lu Estilo, desenvolvida com FastAPI, Po
 docker-compose up -d
 ```
 
-A API estará disponível em `http://localhost:8000` e a documentação em `http://localhost:8000/docs`.
+A API estará disponível em `http://localhost:8000`, documentação em `http://localhost:8000/api/docs` e documentação de ReDoc em `http://localhost:8000/api/redoc`.
 
 ### Instalação Manual
 
@@ -114,10 +114,84 @@ lu_estilo_api/
 - `PUT /orders/{id}` - Atualizar pedido (status)
 - `DELETE /orders/{id}` - Excluir pedido
 
+## Testes da Aplicação (46 testes)
+
+### Autenticação (6 testes)
+- Registro de novo usuário
+- Tentativa de registro com e-mail existente
+- Login bem-sucedido
+- Login com senha incorreta
+- Login com usuário inexistente
+- Atualização de token (não implementado)
+
+### Clientes (13 testes)
+- Criação de cliente
+- Tentativa de criar cliente com e-mail duplicado
+- Tentativa de criar cliente com CPF duplicado
+- Validação de formato de CPF inválido
+- Listagem de clientes
+- Filtragem de clientes
+- Busca de cliente específico
+- Busca de cliente inexistente
+- Atualização de dados do cliente
+- Conflito de e-mail ao atualizar
+- Atualização de cliente inexistente
+- Exclusão de cliente
+- Tentativa de excluir cliente inexistente
+
+### Pedidos (13 testes)
+- Criação de pedido
+- Tentativa de criar pedido com estoque insuficiente
+- Tentativa de criar pedido com produto inexistente
+- Tentativa de criar pedido com cliente inexistente
+- Listagem de pedidos
+- Filtragem de pedidos
+- Busca de pedido específico
+- Busca de pedido inexistente
+- Atualização de status do pedido
+- Tentativa de atualizar status sem ser admin
+- Atualização de pedido inexistente
+- Exclusão de pedido
+- Tentativa de exclusão sem ser admin
+- Tentativa de excluir pedido inexistente
+
+### Produtos (14 testes)
+- Criação de produto
+- Tentativa de criar produto sem ser admin
+- Validação de dados inválidos
+- Listagem de produtos
+- Filtragem de produtos
+- Busca de produto específico
+- Busca de produto inexistente
+- Atualização de produto
+- Tentativa de atualizar sem ser admin
+- Atualização de produto inexistente
+- Exclusão de produto
+- Tentativa de exclusão sem ser admin
+- Tentativa de excluir produto inexistente
+
 ## Testes
 
 Execute os testes automatizados com:
 
+**Testes Unitários via Docker:**
+```bash
+docker-compose exec api pytest
+```
+
+**Testes Unitários via Docker com Coverage:**
+```bash
+docker-compose exec api pytest --cov=src --cov-report=term-missing
+```
+
+**Testes Unitários via Docker com Logging:**
+```bash
+docker-compose exec api pytest -v --log-cli-level=INFO
+```
+
+ou
+
+**Testes Unitários via Python (Deve ser usado quando instalado manualmente):**    
 ```bash
 pytest
 ```
@@ -132,12 +206,17 @@ A API inclui integração com WhatsApp via Twilio para notificações automátic
 
 Para configurar, adicione suas credenciais Twilio no arquivo `.env`.
 
+## Futuras Implementações
+
+* **Relatórios Automatizados (Airflow):** Pipeline ETL para extrair dados do PostgreSQL, transformar com Pandas e enviar relatórios de vendas.
+* **Chatbot Inteligente (GroqCloud):** Endpoint FastAPI para receber perguntas, contextualizar com dados da API (produtos/pedidos do PostgreSQL) e obter respostas rápidas de um LLM via GroqCloud para atendimento ao cliente.
+
 ## Documentação da API
 
 A documentação interativa está disponível em:
 
-- Swagger UI: `/docs`
-- ReDoc: `/redoc`
+- Swagger UI: `/api/docs`
+- ReDoc: `/api/redoc`
 
 ## Licença
 
