@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine # Use a specific version
+    container_name: lu_estilo_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: lu_estilo_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5433:5432" # Expose on host port 5433 to avoid conflicts
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U user -d lu_estilo_db"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+
+  api:
+    build: .
+    container_name: lu_estilo_api
+    command: uvicorn src.main:app --host 0.0.0.0 --port 80 --reload
+    volumes:
+      - .:/app # Mount current directory to /app in container for development reload
+    ports:
+      - "8000:80" # Map container port 80 to host port 8000
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://user:password@db:5432/lu_estilo_db
+      - SECRET_KEY=mysecretkey
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      # - SENTRY_DSN=your_sentry_dsn # Uncomment and set if using Sentry
+      # - WHATSAPP_API_URL=your_whatsapp_url # Set if using WhatsApp integration
+      # - WHATSAPP_API_TOKEN=your_whatsapp_token # Set if using WhatsApp integration
+    depends_on:
+      db:
+        condition: service_healthy # Wait for db to be healthy
+    # Add entrypoint for running migrations automatically (optional)
+    # entrypoint: |
+    #   bash -c "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 80 --reload"
+
+volumes:
+  postgres_data:
+
