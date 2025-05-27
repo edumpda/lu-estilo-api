@@ -170,7 +170,7 @@ lu_estilo_api/
 - Tentativa de exclusão sem ser admin
 - Tentativa de excluir produto inexistente
 
-## Testes
+## Executando Testes
 
 Execute os testes automatizados com:
 
@@ -204,7 +204,19 @@ A API inclui integração com WhatsApp via Twilio para notificações automátic
 - Atualizações de status
 - Promoções e novidades
 
-Para configurar, adicione suas credenciais Twilio no arquivo `.env`.
+A API está configurada para enviar notificações via WhatsApp utilizando a API da Twilio, conforme implementado em `src/services/whatsapp_service.py`. As notificações podem incluir confirmações de pedido e atualizações de status.
+
+### Configurando e Testando com o Twilio Sandbox
+
+Para testar o envio de mensagens do WhatsApp:
+
+1.  **Configure o Twilio Sandbox:**
+    * Crie ou acesse sua conta na [Twilio](https://www.twilio.com).
+    * No console da Twilio, navegue até "Messaging" > "Try it out" > "Send a WhatsApp message" para configurar e ativar o sandbox. Isso geralmente envolve enviar uma mensagem do seu número de WhatsApp pessoal (que será seu número de teste) para o número do sandbox fornecido pela Twilio.
+    * Anote seu `Account SID`, `Auth Token` e o número de telefone do WhatsApp do Sandbox da Twilio (ex: `+14155238886`).
+
+2.  **Atualize as Variáveis de Ambiente (`.env`):**
+    * Adicione/modifique as seguintes variáveis no seu arquivo `.env` com suas credenciais e informações da Twilio
 
 ## Futuras Implementações
 
@@ -217,7 +229,3 @@ A documentação interativa está disponível em:
 
 - Swagger UI: `/api/docs`
 - ReDoc: `/api/redoc`
-
-## Licença
-
-Este projeto está licenciado sob a licença MIT.
